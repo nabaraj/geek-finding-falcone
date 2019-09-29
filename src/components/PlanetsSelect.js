@@ -3,20 +3,20 @@ import React, { Component } from "react";
 class PlanetsSelect extends Component {
   render() {
     let { parentIndex, trackObject, planetsArr } = this.props;
-    console.log(
-      "##### ",
-      trackObject[parentIndex] ? trackObject[parentIndex].planet : {}
-    );
-    let defaultValue = this.props.trackObject[parentIndex]
+    let defaultValue = trackObject[parentIndex]
       ? this.props.trackObject[parentIndex].planetValue
       : `-${parentIndex}`;
     return (
-      <div>
-        <select onChange={this.props.selectPlanete} value={defaultValue}>
+      <div className="form-group">
+        <select
+          onChange={this.props.selectPlanete}
+          value={defaultValue}
+          className="form-control"
+        >
           <option defaultValue value={`-${parentIndex}`}>
             Select Planet
           </option>
-          {this.props.planetsArr.map((item, index) => {
+          {planetsArr.map((item, index) => {
             return (
               <option
                 key={`${item.name}-${index}`}

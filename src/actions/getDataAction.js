@@ -36,7 +36,7 @@ export function displayNotification(data) {
     clearTimeout(timer);
     setTimeout(() => {
       dispatch({ type: SHOW_NOTIFICATION, payload: "" });
-    }, 5000);
+    }, 3000);
   };
 }
 export function resetAppFn(data) {
@@ -44,16 +44,7 @@ export function resetAppFn(data) {
     dispatch({ type: RESET_APP, payload: data });
   };
 }
-// export function updateTrackerPlanet(value) {
-//   return dispatch => {
-//     dispatch({ type: SELECT_PLANET, payload: value });
-//   };
-// }
-// export function updateTrackerVehicle(value) {
-//   return dispatch => {
-//     dispatch({ type: SELECT_VEHICLE, payload: value });
-//   };
-// }
+//first getting token and onsuccess sending game results
 export function submitResult(trackObject) {
   return dispatch => {
     let tokenOption = {
@@ -62,8 +53,6 @@ export function submitResult(trackObject) {
       headers: { Accept: "application/json" }
     };
     requestApi(tokenOption).then(result => {
-      //dispatch({ type: STORE_VEHICLE_DATA, payload: result.data });
-      console.log(result.data);
       let planet_names = [],
         vehicle_names = [];
       Object.keys(trackObject).map((item, index) => {
@@ -84,7 +73,6 @@ export function submitResult(trackObject) {
         }
       };
       requestApi(postFindOption).then(result => {
-        //console.log(result);
         dispatch({ type: GOT_RESULT, payload: result.data });
       });
     });

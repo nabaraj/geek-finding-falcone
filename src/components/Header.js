@@ -6,17 +6,21 @@ import { bindActionCreators } from "redux";
 class Header extends Component {
   render() {
     return (
-      <header className="App-header">
+      <header className="App-header shadow-sm p-3 mb-5 bg-white">
         <div className="container">
-          <ul className="nav justify-content-end">
+          <ul className="nav justify-content-end headerNav">
             <li>
-              <button
-                type="button"
+              <span
                 onClick={e => this.props.resetAppFn(true)}
-                className="btn btn-outline-info"
+                className="text-success resetLink"
               >
                 Reset
-              </button>
+              </span>
+            </li>
+            <li>
+              <a href="https://www.geektrust.in/" className="text-success">
+                Geek Trust Home
+              </a>
             </li>
           </ul>
         </div>

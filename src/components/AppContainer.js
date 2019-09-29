@@ -118,8 +118,7 @@ class AppContainer extends Component {
 
   selectVehicle(e) {
     let indexArr = e.target.value.split("-");
-    let { vehicleArr, planetsArr, trackObject, distance } = this.state;
-    //let { trackObject } = this.props;
+    let { vehicleArr, planetsArr, trackObject } = this.state;
 
     let oldVehicleIndex = trackObject[indexArr[1]]["vehicle"] || "";
     let max_distance = vehicleArr[indexArr[0]].max_distance;
@@ -129,7 +128,6 @@ class AppContainer extends Component {
       trackObject[indexArr[1]]["vehicleName"] = vehicleArr[indexArr[0]].name;
       trackObject[indexArr[1]]["vehicleChecked"] = true;
 
-      //this.props.updateTrackerVehicle(indexArr);
       vehicleArr[indexArr[0]].total_no =
         this.state.vehicleArr[indexArr[0]].total_no - 1;
       if (oldVehicleIndex) {
@@ -149,11 +147,10 @@ class AppContainer extends Component {
         `Planet's distance is more then vehicle's max distance`
       );
     }
-    //console.log("#### ", max_distance, planetDistance);
   }
+
+  //method to add filter component
   renderFilter() {
-    console.log("changes");
-    //debugger;
     let appGrid = [];
     for (let i = 0; i < this.state.columnCount; i++) {
       appGrid.push(
@@ -183,7 +180,6 @@ class AppContainer extends Component {
         let planetDistance = planetsArr[trackObject[item].planet].distance;
         distanceTotal = distanceTotal + planetDistance / vehicleSpeed;
         counter++;
-        console.log("counter ", counter);
       }
     });
     distance.total = distanceTotal;
@@ -213,13 +209,7 @@ class AppContainer extends Component {
     );
   }
   render() {
-    let {
-      vehicleArr,
-      planetsArr,
-      distance,
-      trackObject,
-      disabled
-    } = this.state;
+    let { vehicleArr, planetsArr, distance, disabled } = this.state;
     return (
       <div className="row">
         {this.props.result ? (
@@ -227,9 +217,9 @@ class AppContainer extends Component {
         ) : (
           <React.Fragment>
             <div className="col-sm-12">
-              <h2 className="text-center">
+              <h3 className="text-center">
                 Select Planes You Want To Search In
-              </h2>
+              </h3>
             </div>
             {vehicleArr.length > 0 && planetsArr.length > 0 ? (
               <React.Fragment>
@@ -251,7 +241,9 @@ class AppContainer extends Component {
                 </div>
               </React.Fragment>
             ) : (
-              "Loading 123..."
+              <div className="col-sm-12 text-center">
+                <h5>"Loading ..."</h5>
+              </div>
             )}
           </React.Fragment>
         )}
@@ -260,7 +252,6 @@ class AppContainer extends Component {
   }
 }
 function mapStateToProps(state) {
-  console.log(state);
   return {
     planetsArr: state.appsData.planetsArr,
     vehicleArr: state.appsData.vehicleArr,
