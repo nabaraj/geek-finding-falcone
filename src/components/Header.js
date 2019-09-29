@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { resetAppFn } from "./../actions/getDataAction";
 import { bindActionCreators } from "redux";
 
+import Notification from "./Notification";
 class Header extends Component {
   render() {
     return (
@@ -25,10 +26,7 @@ class Header extends Component {
           </ul>
         </div>
         {this.props.notification && (
-          <div className="toast fade show">
-            <div className="toast-header">Notification</div>
-            <div className="toast-body">{this.props.notification}</div>
-          </div>
+          <Notification notification={this.props.notification} />
         )}
       </header>
     );

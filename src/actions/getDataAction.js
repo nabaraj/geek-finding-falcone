@@ -13,9 +13,14 @@ export function getPlanetesData() {
       method: "GET",
       url: "https://findfalcone.herokuapp.com/planets"
     };
-    requestApi(options).then(result => {
-      dispatch({ type: STORE_PLANETS_DATA, payload: result.data });
-    });
+    requestApi(options)
+      .then(result => {
+        dispatch({ type: STORE_PLANETS_DATA, payload: result.data });
+      })
+      .catch(error => {
+        this.displayNotification("Please try agin letter");
+        console.log(error);
+      });
   };
 }
 export function getVehcleData() {
@@ -24,16 +29,22 @@ export function getVehcleData() {
       method: "GET",
       url: "https://findfalcone.herokuapp.com/vehicles"
     };
-    requestApi(options).then(result => {
-      dispatch({ type: STORE_VEHICLE_DATA, payload: result.data });
-    });
+    requestApi(options)
+      .then(result => {
+        dispatch({ type: STORE_VEHICLE_DATA, payload: result.data });
+      })
+      .catch(error => {
+        this.displayNotification("Please try agin letter");
+        console.log(error);
+      });
   };
 }
 export function displayNotification(data) {
   return dispatch => {
-    dispatch({ type: SHOW_NOTIFICATION, payload: data });
     let timer;
     clearTimeout(timer);
+    dispatch({ type: SHOW_NOTIFICATION, payload: data });
+
     setTimeout(() => {
       dispatch({ type: SHOW_NOTIFICATION, payload: "" });
     }, 3000);

@@ -17,6 +17,12 @@
   right: 15px;
   top: 0;
 }
+.toast-header span {
+  display: inline-block;
+  border-radius: 1px;
+  padding: 7px;
+  margin-right: 4px;
+}
 .headerNav li {
   padding: 0 8px;
   border-left: 1px solid #28a745;

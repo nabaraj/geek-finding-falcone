@@ -47,7 +47,7 @@ class AppContainer extends Component {
       let vehicleArr = JSON.parse(JSON.stringify(this.props.vehicleArr));
       this.setState(
         {
-          distance: {},
+          distance: { total: 0 },
           planetsArr: planetsArr,
           vehicleArr: vehicleArr,
           trackObject: {}
