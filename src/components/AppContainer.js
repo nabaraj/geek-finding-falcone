@@ -191,7 +191,7 @@ class AppContainer extends Component {
   renderResult(result) {
     return (
       <div className="text-center col-sm-12">
-        {result.status ? (
+        {result.status && result.status !== "false" ? (
           <React.Fragment>
             <h5>
               Success! Congratulations on Finding Falcon. King Shan is mighty
@@ -202,7 +202,7 @@ class AppContainer extends Component {
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <h5>Faliur! result not found, try again.</h5>
+            <h5>Could not not found, try again.</h5>
           </React.Fragment>
         )}
       </div>
