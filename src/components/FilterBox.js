@@ -5,7 +5,7 @@ import VehicleSelect from "./VehicleSelect";
 class FilterBox extends Component {
   render() {
     let { trackObject, parentIndex } = this.props;
-    console.log(trackObject[parentIndex]);
+    //console.log(trackObject[parentIndex]);
     return (
       <div className="col-sm">
         <PlanetsSelect {...this.props}></PlanetsSelect>

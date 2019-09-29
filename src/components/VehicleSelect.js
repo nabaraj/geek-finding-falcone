@@ -31,7 +31,7 @@ class VehicleSelect extends Component {
                   checked={checked}
                 />
                 <label htmlFor={`${radioId}`} className="form-check-label">
-                  {item.name}({item.total_no}){item.max_distance}
+                  {item.name}({item.total_no})
                 </label>
               </li>
             );

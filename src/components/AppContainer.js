@@ -5,8 +5,7 @@ import {
   getVehcleData,
   displayNotification,
   resetAppFn,
-  updateTrackerPlanet,
-  updateTrackerVehicle
+  submitResult
 } from "./../actions/getDataAction";
 import { bindActionCreators } from "redux";
 import FilterBox from "./FilterBox";
@@ -18,11 +17,15 @@ class AppContainer extends Component {
       vehicleArr: [],
       planetsArr: [],
       trackObject: {},
-      distance: 0
+      distance: { total: 0 },
+      columnCount: 4,
+      disabled: true
     };
     this.renderFilter = this.renderFilter.bind(this);
     this.selectPlanete = this.selectPlanete.bind(this);
     this.selectVehicle = this.selectVehicle.bind(this);
+    this.calculateDistance = this.calculateDistance.bind(this);
+    this.renderResult = this.renderResult.bind(this);
   }
   componentDidMount() {
     this.props.getPlanetesData();
@@ -44,10 +47,10 @@ class AppContainer extends Component {
       let vehicleArr = JSON.parse(JSON.stringify(this.props.vehicleArr));
       this.setState(
         {
-          trackObject: {},
-          distance: 0,
+          distance: {},
           planetsArr: planetsArr,
-          vehicleArr: vehicleArr
+          vehicleArr: vehicleArr,
+          trackObject: {}
         },
         () => {
           this.props.resetAppFn(false);
@@ -56,27 +59,34 @@ class AppContainer extends Component {
     }
     //return null;
   }
+  // reset vehicleArr if default value is selected
   selectPlanete(e) {
-    let { planetsArr, vehicleArr } = this.state;
-    //let { trackObject } = this.props;
+    let { planetsArr, vehicleArr, trackObject } = this.state;
     let flattenArr = e.target.value.split("-");
 
-    // if (!trackObject[flattenArr[1]]) {
-    //   trackObject[flattenArr[1]] = {};
-    // }
-    // let vehicleArrIndex = trackObject[flattenArr[1]].vehicle;
-    // if (flattenArr[0]) {
-    //   trackObject[flattenArr[1]]["planet"] = flattenArr[0];
-    //   trackObject[flattenArr[1]]["planetValue"] = e.target.value;
-    // } else {
-    //   trackObject[flattenArr[1]]["planet"] = "";
-    //   trackObject[flattenArr[1]]["vehicle"] = "";
-    //   if (vehicleArrIndex) {
-    //     vehicleArr[vehicleArrIndex].total_no =
-    //       this.props.vehicleArr[vehicleArrIndex].total_no + 1;
-    //   }
-    // }
-    this.props.updateTrackerPlanet(e.target.value);
+    if (!trackObject[flattenArr[1]]) {
+      trackObject[flattenArr[1]] = {};
+    }
+    let vehicleArrIndex = trackObject[flattenArr[1]]
+      ? trackObject[flattenArr[1]].vehicle
+      : null;
+
+    trackObject[flattenArr[1]]["planet"] = flattenArr[0] ? flattenArr[0] : "";
+    trackObject[flattenArr[1]]["planetName"] = flattenArr[0]
+      ? planetsArr[flattenArr[0]].name
+      : "";
+
+    trackObject[flattenArr[1]]["vehicle"] = "";
+    //update vehicle index after each select planet
+    if (vehicleArrIndex) {
+      vehicleArr[vehicleArrIndex].total_no =
+        vehicleArr[vehicleArrIndex].total_no + 1 >
+        this.props.vehicleArr[vehicleArrIndex].total_no
+          ? this.props.vehicleArr[vehicleArrIndex].total_no
+          : vehicleArr[vehicleArrIndex].total_no + 1;
+    }
+    trackObject[flattenArr[1]]["planetValue"] = e.target.value;
+    //this.props.updateTrackerPlanet(e.target.value);
 
     planetsArr.map((item, index) => {
       if (index === parseInt(flattenArr[0])) {
@@ -92,35 +102,51 @@ class AppContainer extends Component {
     });
 
     //}
-    this.setState({
-      planetsArr,
-      //trackObject,
-      vehicleArr
-    });
+    this.setState(
+      {
+        planetsArr,
+        trackObject,
+        vehicleArr
+      },
+      this.calculateDistance
+    );
   }
+
+  // on select vehicle update the total vahicle count in vehicleArr
+  // need to check max_distance and planet distance
+  // update trackObject vehicle and vehicleChecked
+
   selectVehicle(e) {
     let indexArr = e.target.value.split("-");
-    let { vehicleArr, trackObject, planetsArr } = this.state;
+    let { vehicleArr, planetsArr, trackObject, distance } = this.state;
+    //let { trackObject } = this.props;
+
     let oldVehicleIndex = trackObject[indexArr[1]]["vehicle"] || "";
     let max_distance = vehicleArr[indexArr[0]].max_distance;
     let planetDistance = planetsArr[indexArr[1]].distance;
     if (max_distance >= planetDistance) {
       trackObject[indexArr[1]]["vehicle"] = indexArr[0];
+      trackObject[indexArr[1]]["vehicleName"] = vehicleArr[indexArr[0]].name;
       trackObject[indexArr[1]]["vehicleChecked"] = true;
 
+      //this.props.updateTrackerVehicle(indexArr);
       vehicleArr[indexArr[0]].total_no =
         this.state.vehicleArr[indexArr[0]].total_no - 1;
       if (oldVehicleIndex) {
         vehicleArr[oldVehicleIndex].total_no =
           this.state.vehicleArr[oldVehicleIndex].total_no + 1;
       }
-      this.setState({
-        vehicleArr,
-        trackObject
-      });
+
+      this.setState(
+        {
+          vehicleArr,
+          trackObject
+        },
+        this.calculateDistance
+      );
     } else {
       this.props.displayNotification(
-        `Planet distance ${planetDistance} is more then vehicle max distance ${max_distance}`
+        `Planet's distance is more then vehicle's max distance`
       );
     }
     //console.log("#### ", max_distance, planetDistance);
@@ -129,7 +155,7 @@ class AppContainer extends Component {
     console.log("changes");
     //debugger;
     let appGrid = [];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < this.state.columnCount; i++) {
       appGrid.push(
         <FilterBox
           key={i}
@@ -144,20 +170,90 @@ class AppContainer extends Component {
     }
     return appGrid;
   }
-  render() {
-    let { vehicleArr, planetsArr, distance } = this.state;
-    console.log(vehicleArr, planetsArr);
+  // calculate the total distance
+
+  calculateDistance() {
+    let disabled = true;
+    let counter = 0;
+    let { trackObject, planetsArr, vehicleArr, distance } = this.state;
+    let distanceTotal = 0;
+    Object.keys(trackObject).map((item, index) => {
+      if (trackObject[item].vehicle && trackObject[item].planet) {
+        let vehicleSpeed = vehicleArr[trackObject[item].vehicle].speed;
+        let planetDistance = planetsArr[trackObject[item].planet].distance;
+        distanceTotal = distanceTotal + planetDistance / vehicleSpeed;
+        counter++;
+        console.log("counter ", counter);
+      }
+    });
+    distance.total = distanceTotal;
+    if (counter === this.state.columnCount) {
+      disabled = false;
+    }
+    this.setState({ disabled, distance });
+  }
+  renderResult(result) {
     return (
-      <div className="row">
-        {vehicleArr.length > 0 && planetsArr.length > 0 ? (
+      <div className="text-center col-sm-12">
+        {result.status ? (
           <React.Fragment>
-            {this.renderFilter()}
-            <div className="col-sm">
-              <h4>Time Taken:{distance}</h4>
-            </div>
+            <h5>
+              Success! Congratulations on Finding Falcon. King Shan is mighty
+              pleased.
+            </h5>
+            <h5>{`Time Taken: ${this.state.distance.total}`}</h5>
+            <h5>{`Planet found: ${result.planet_name}`}</h5>
           </React.Fragment>
         ) : (
-          "Loading 123..."
+          <React.Fragment>
+            <h5>Faliur! result not found, try again.</h5>
+          </React.Fragment>
+        )}
+      </div>
+    );
+  }
+  render() {
+    let {
+      vehicleArr,
+      planetsArr,
+      distance,
+      trackObject,
+      disabled
+    } = this.state;
+    return (
+      <div className="row">
+        {this.props.result ? (
+          this.renderResult(this.props.result)
+        ) : (
+          <React.Fragment>
+            <div className="col-sm-12">
+              <h2 className="text-center">
+                Select Planes You Want To Search In
+              </h2>
+            </div>
+            {vehicleArr.length > 0 && planetsArr.length > 0 ? (
+              <React.Fragment>
+                {this.renderFilter()}
+                <div className="col-sm">
+                  <h4>Time Taken:{distance.total}</h4>
+                </div>
+                <div className="col-sm-12 text-center">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    disabled={disabled}
+                    onClick={e =>
+                      this.props.submitResult(this.state.trackObject)
+                    }
+                  >
+                    Submit
+                  </button>
+                </div>
+              </React.Fragment>
+            ) : (
+              "Loading 123..."
+            )}
+          </React.Fragment>
         )}
       </div>
     );
@@ -168,7 +264,8 @@ function mapStateToProps(state) {
   return {
     planetsArr: state.appsData.planetsArr,
     vehicleArr: state.appsData.vehicleArr,
-    resetApp: state.appsData.resetApp
+    resetApp: state.appsData.resetApp,
+    result: state.appsData.result
   };
 }
 
@@ -179,8 +276,7 @@ function mapDispatchToProps(dispatch) {
       getVehcleData: getVehcleData,
       displayNotification: displayNotification,
       resetAppFn: resetAppFn,
-      updateTrackerPlanet: updateTrackerPlanet,
-      updateTrackerVehicle: updateTrackerVehicle
+      submitResult: submitResult
     },
     dispatch
   );

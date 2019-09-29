@@ -3,7 +3,7 @@ import {
   STORE_VEHICLE_DATA,
   SHOW_NOTIFICATION,
   RESET_APP,
-  SELECT_PLANET
+  GOT_RESULT
 } from "./types";
 import { requestApi } from "./../service/request";
 
@@ -44,9 +44,49 @@ export function resetAppFn(data) {
     dispatch({ type: RESET_APP, payload: data });
   };
 }
-export function updateTrackerPlanet(value) {
+// export function updateTrackerPlanet(value) {
+//   return dispatch => {
+//     dispatch({ type: SELECT_PLANET, payload: value });
+//   };
+// }
+// export function updateTrackerVehicle(value) {
+//   return dispatch => {
+//     dispatch({ type: SELECT_VEHICLE, payload: value });
+//   };
+// }
+export function submitResult(trackObject) {
   return dispatch => {
-    dispatch({ type: SELECT_PLANET, payload: value });
+    let tokenOption = {
+      url: "https://findfalcone.herokuapp.com/token",
+      method: "POST",
+      headers: { Accept: "application/json" }
+    };
+    requestApi(tokenOption).then(result => {
+      //dispatch({ type: STORE_VEHICLE_DATA, payload: result.data });
+      console.log(result.data);
+      let planet_names = [],
+        vehicle_names = [];
+      Object.keys(trackObject).map((item, index) => {
+        planet_names.push(trackObject[item].planetName);
+        vehicle_names.push(trackObject[item].vehicleName);
+      });
+      let postFindOption = {
+        url: "https://findfalcone.herokuapp.com/find",
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        data: {
+          token: result.data.token,
+          planet_names,
+          vehicle_names
+        }
+      };
+      requestApi(postFindOption).then(result => {
+        //console.log(result);
+        dispatch({ type: GOT_RESULT, payload: result.data });
+      });
+    });
   };
 }
-export function updateTrackerVehicle() {}

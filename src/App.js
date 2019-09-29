@@ -8,8 +8,7 @@ function App() {
     <div>
       <Header></Header>
       <div className="container">
-        {/* <h1 className="text-center">Finding Falcone!</h1>
-          <h2 className="text-center">Select Planes You Want To Search In</h2> */}
+        <h1 className="text-center">Finding Falcone!</h1>
         <Appcontainer />
       </div>
     </div>
