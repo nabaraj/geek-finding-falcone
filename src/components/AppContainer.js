@@ -53,6 +53,7 @@ class AppContainer extends Component {
           trackObject: {}
         },
         () => {
+          this.calculateDistance();
           this.props.resetAppFn(false);
         }
       );
