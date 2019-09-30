@@ -168,7 +168,7 @@ class AppContainer extends Component {
     }
     return appGrid;
   }
-  // calculate the total distance
+  // calculate the total distance and enable submit button
 
   calculateDistance() {
     let disabled = true;
@@ -231,13 +231,13 @@ class AppContainer extends Component {
                 <div className="col-sm-12 text-center">
                   <button
                     type="button"
-                    className="btn btn-primary"
+                    className="btn btn-outline-success"
                     disabled={disabled}
                     onClick={e =>
                       this.props.submitResult(this.state.trackObject)
                     }
                   >
-                    Submit
+                    Find Falcon!
                   </button>
                 </div>
               </React.Fragment>
