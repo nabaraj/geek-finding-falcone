@@ -32,7 +32,7 @@ class PlanetsSelect extends Component {
   filterPlanets(e) {
     let inputText = e.target.value;
     let filteredPlanets = this.props.planetsArr.filter((item, index) => {
-      return item.name.toLowerCase().includes(inputText);
+      return item.name.toLowerCase().includes(inputText.toLowerCase());
     });
     this.setState({
       filteredPlanets
