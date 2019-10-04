@@ -60,14 +60,20 @@ class AppContainer extends Component {
     }
     //return null;
   }
-  // reset vehicleArr if default value is selected
-  selectPlanete(e) {
+  /**  
+    reset vehicleArr if default value is selected
+    calculate distance
+  * @param {String} selectedPlanet - selected planet index and parent filterbox index
+  */
+  selectPlanete(selectedPlanet) {
     let { planetsArr, vehicleArr, trackObject } = this.state;
-    let flattenArr = e.target.value.split("-");
+    let flattenArr = selectedPlanet.split("-");
 
+    //assign empty object to trackObject with parent index for first time
     if (!trackObject[flattenArr[1]]) {
       trackObject[flattenArr[1]] = {};
     }
+
     let vehicleArrIndex = trackObject[flattenArr[1]]
       ? trackObject[flattenArr[1]].vehicle
       : null;
@@ -78,7 +84,8 @@ class AppContainer extends Component {
       : "";
 
     trackObject[flattenArr[1]]["vehicle"] = "";
-    //update vehicle index after each select planet
+
+    //update vehicle quantity after each select planet
     if (vehicleArrIndex) {
       vehicleArr[vehicleArrIndex].total_no =
         vehicleArr[vehicleArrIndex].total_no + 1 >
@@ -86,7 +93,7 @@ class AppContainer extends Component {
           ? this.props.vehicleArr[vehicleArrIndex].total_no
           : vehicleArr[vehicleArrIndex].total_no + 1;
     }
-    trackObject[flattenArr[1]]["planetValue"] = e.target.value;
+    trackObject[flattenArr[1]]["planetValue"] = selectedPlanet;
     //this.props.updateTrackerPlanet(e.target.value);
 
     planetsArr.map((item, index) => {
@@ -113,17 +120,22 @@ class AppContainer extends Component {
     );
   }
 
-  // on select vehicle update the total vahicle count in vehicleArr
-  // need to check max_distance and planet distance
-  // update trackObject vehicle and vehicleChecked
-
+  /** 
+   on select vehicle update the total vahicle count in vehicleArr
+   check max_distance and planet distance
+   update trackObject vehicle and vehicleChecked
+   calculate distance
+   @param {Object} vehicle- selected vehicle index and parent filterbox index
+   
+*/
   selectVehicle(e) {
     let indexArr = e.target.value.split("-");
     let { vehicleArr, planetsArr, trackObject } = this.state;
 
     let oldVehicleIndex = trackObject[indexArr[1]]["vehicle"] || "";
+    let planetIndex = trackObject[indexArr[1]]["planet"];
     let max_distance = vehicleArr[indexArr[0]].max_distance;
-    let planetDistance = planetsArr[indexArr[1]].distance;
+    let planetDistance = planetsArr[planetIndex].distance;
     if (max_distance >= planetDistance) {
       trackObject[indexArr[1]]["vehicle"] = indexArr[0];
       trackObject[indexArr[1]]["vehicleName"] = vehicleArr[indexArr[0]].name;
@@ -163,13 +175,17 @@ class AppContainer extends Component {
           trackObject={this.state.trackObject}
           selectVehicle={this.selectVehicle}
           parentIndex={i}
+          resetApp={this.props.resetApp}
         ></FilterBox>
       );
     }
     return appGrid;
   }
-  // calculate the total distance and enable submit button
 
+  /* 
+  calculate the total distance and enable submit button
+  will check all filter box planet and vehicle selected 
+*/
   calculateDistance() {
     let disabled = true;
     let counter = 0;
@@ -189,6 +205,12 @@ class AppContainer extends Component {
     }
     this.setState({ disabled, distance });
   }
+
+  /**
+   * display result for find end point
+   * handle false result
+   * @param {object} result -  got from find end poin
+   */
   renderResult(result) {
     return (
       <div className="text-center col-sm-12">
@@ -203,7 +225,7 @@ class AppContainer extends Component {
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <h5>Could not not found, try again.</h5>
+            <h5>Could not found, try again.</h5>
           </React.Fragment>
         )}
       </div>
@@ -224,10 +246,14 @@ class AppContainer extends Component {
             </div>
             {vehicleArr.length > 0 && planetsArr.length > 0 ? (
               <React.Fragment>
+                {/* render filter box start */}
                 {this.renderFilter()}
+                {/* render filter box end */}
+
                 <div className="col-sm">
                   <h4>Time Taken:{distance.total}</h4>
                 </div>
+                {/* button container */}
                 <div className="col-sm-12 text-center">
                   <button
                     type="button"
@@ -240,6 +266,7 @@ class AppContainer extends Component {
                     Find Falcon!
                   </button>
                 </div>
+                {/* button container */}
               </React.Fragment>
             ) : (
               <div className="col-sm-12 text-center">

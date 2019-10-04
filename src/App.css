@@ -1,3 +1,6 @@
+body {
+  padding-top: 4.5rem;
+}
 .App-header {
   background-color: #282c34;
   min-height: 20px;
@@ -14,7 +17,7 @@
   color: #000000;
   position: absolute;
   z-index: 1;
-  right: 15px;
+  left: 15px;
   top: 0;
 }
 .toast-header span {
@@ -34,4 +37,27 @@
 }
 .resetLink {
   cursor: pointer;
+}
+.badge .badge {
+  cursor: pointer;
+  margin-left: 5px;
+}
+.list-group .list-group-item {
+  font-weight: bold;
+}
+.list-group-item.disabled,
+.list-group-item:disabled {
+  color: #adadad;
+}
+.tagContainer {
+  display: flex;
+  align-items: center;
+}
+.list-group {
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+}
+.autoComplete {
+  position: relative;
 }

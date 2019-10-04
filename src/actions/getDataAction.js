@@ -5,16 +5,18 @@ import {
   RESET_APP,
   GOT_RESULT
 } from "./types";
+import { urlMapping } from "./../service/url";
 import { requestApi } from "./../service/request";
 
 export function getPlanetesData() {
   return dispatch => {
     let options = {
       method: "GET",
-      url: "https://findfalcone.herokuapp.com/planets"
+      url: urlMapping["planet"]
     };
     requestApi(options)
       .then(result => {
+        result.data.map((item, index) => (item["orgIndex"] = index));
         dispatch({ type: STORE_PLANETS_DATA, payload: result.data });
       })
       .catch(error => {
@@ -27,7 +29,7 @@ export function getVehcleData() {
   return dispatch => {
     let options = {
       method: "GET",
-      url: "https://findfalcone.herokuapp.com/vehicles"
+      url: urlMapping["vehicle"]
     };
     requestApi(options)
       .then(result => {
@@ -39,6 +41,7 @@ export function getVehcleData() {
       });
   };
 }
+
 export function displayNotification(data) {
   return dispatch => {
     let timer;
@@ -50,6 +53,7 @@ export function displayNotification(data) {
     }, 3000);
   };
 }
+
 export function resetAppFn(data) {
   return dispatch => {
     dispatch({ type: RESET_APP, payload: data });
@@ -59,7 +63,7 @@ export function resetAppFn(data) {
 export function submitResult(trackObject) {
   return dispatch => {
     let tokenOption = {
-      url: "https://findfalcone.herokuapp.com/token",
+      url: urlMapping["token"],
       method: "POST",
       headers: { Accept: "application/json" }
     };
@@ -71,7 +75,7 @@ export function submitResult(trackObject) {
         vehicle_names.push(trackObject[item].vehicleName);
       });
       let postFindOption = {
-        url: "https://findfalcone.herokuapp.com/find",
+        url: urlMapping["find"],
         method: "POST",
         headers: {
           Accept: "application/json",

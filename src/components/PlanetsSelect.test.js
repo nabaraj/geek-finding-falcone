@@ -29,12 +29,16 @@ describe("Test AppContainer", function() {
   it("match snapeshots", () => {
     expect(wrapper).toMatchSnapshot();
   });
-  it("check select component", () => {
-    expect(wrapper.find(".form-control").length).toBe(1);
-  });
-  it("check select component", () => {
-    expect(wrapper.find(".form-control").find("option").length).toBe(
-      dummyProps.planetsArr.length + 1
+
+  it("check input focus event", () => {
+    wrapper.find("input").simulate("focus");
+    expect(wrapper.find(".list-group").find("a").length).toBe(
+      dummyProps.planetsArr.length
     );
+  });
+
+  it("check select options component", () => {
+    wrapper.setState({ selectedValue: "Jebing" });
+    expect(wrapper.find(".form-control").find(".badge-primary").length).toBe(1);
   });
 });

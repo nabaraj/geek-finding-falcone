@@ -7,8 +7,8 @@ import Notification from "./Notification";
 class Header extends Component {
   render() {
     return (
-      <header className="App-header shadow-sm p-3 mb-5 bg-white">
-        <div className="container">
+      <header className="App-header shadow-sm p-3 mb-2 bg-gradient-dark text-light fixed-top">
+        <nav className="container">
           <ul className="nav justify-content-end headerNav">
             <li>
               <span
@@ -24,7 +24,7 @@ class Header extends Component {
               </a>
             </li>
           </ul>
-        </div>
+        </nav>
         {this.props.notification && (
           <Notification notification={this.props.notification} />
         )}

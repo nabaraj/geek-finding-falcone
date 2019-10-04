@@ -7,10 +7,10 @@ function App() {
   return (
     <div>
       <Header></Header>
-      <div className="container">
+      <main className="container">
         <h1 className="text-center">Finding Falcone!</h1>
         <Appcontainer />
-      </div>
+      </main>
     </div>
   );
 }
