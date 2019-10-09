@@ -19,7 +19,9 @@ class AppContainer extends Component {
       trackObject: {},
       distance: { total: 0 },
       columnCount: 4,
-      disabled: true
+      disabled: true,
+      progress:0,
+      loading:false
     };
     this.renderFilter = this.renderFilter.bind(this);
     this.selectPlanete = this.selectPlanete.bind(this);
@@ -203,7 +205,7 @@ class AppContainer extends Component {
     if (counter === this.state.columnCount) {
       disabled = false;
     }
-    this.setState({ disabled, distance });
+    this.setState({ disabled, distance, progress:counter/this.state.columnCount });
   }
 
   /**
@@ -232,8 +234,9 @@ class AppContainer extends Component {
     );
   }
   render() {
-    let { vehicleArr, planetsArr, distance, disabled } = this.state;
-    return (
+    let { vehicleArr, planetsArr, distance, disabled, progress, loading } = this.state;
+    let progressStyle = {width:`${progress*100}%`}
+     return (
       <div className="row">
         {this.props.result ? (
           this.renderResult(this.props.result)
@@ -264,6 +267,11 @@ class AppContainer extends Component {
                     }
                   >
                     Find Falcon!
+                    {loading && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
+                    
+                    {!loading &&<div className="progress">
+                      <div className="progress-bar progress-bar-striped bg-success" role="progressbar" style={progressStyle} aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>}
                   </button>
                 </div>
                 {/* button container */}
