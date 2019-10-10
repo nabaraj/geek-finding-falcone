@@ -3,7 +3,8 @@ import {
   STORE_VEHICLE_DATA,
   SHOW_NOTIFICATION,
   RESET_APP,
-  GOT_RESULT
+  GOT_RESULT,
+  APP_LOADING
 } from "./types";
 import { urlMapping } from "./../service/url";
 import { requestApi } from "./../service/request";
@@ -62,6 +63,7 @@ export function resetAppFn(data) {
 //first getting token and onsuccess sending game results
 export function submitResult(trackObject) {
   return dispatch => {
+    dispatch({type:APP_LOADING, status:"loading"})
     let tokenOption = {
       url: urlMapping["token"],
       method: "POST",

@@ -3,3 +3,4 @@ export const STORE_VEHICLE_DATA = "STORE_VEHICLE_DATA";
 export const SHOW_NOTIFICATION = "SHOW_NOTIFICATION";
 export const RESET_APP = "RESET_APP";
 export const GOT_RESULT = "GOT_RESULT";
+export const APP_LOADING = "APP_LOADING";

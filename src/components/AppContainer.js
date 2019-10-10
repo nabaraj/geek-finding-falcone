@@ -234,7 +234,10 @@ class AppContainer extends Component {
     );
   }
   render() {
-    let { vehicleArr, planetsArr, distance, disabled, progress, loading } = this.state;
+    let { vehicleArr, planetsArr, distance, disabled, progress } = this.state;
+    let {loading}=this.props;
+    let disabledStatus = disabled || loading;
+
     let progressStyle = {width:`${progress*100}%`}
      return (
       <div className="row">
@@ -261,7 +264,7 @@ class AppContainer extends Component {
                   <button
                     type="button"
                     className="btn btn-outline-success"
-                    disabled={disabled}
+                    disabled={disabledStatus}
                     onClick={e =>
                       this.props.submitResult(this.state.trackObject)
                     }
@@ -292,7 +295,8 @@ function mapStateToProps(state) {
     planetsArr: state.appsData.planetsArr,
     vehicleArr: state.appsData.vehicleArr,
     resetApp: state.appsData.resetApp,
-    result: state.appsData.result
+    result: state.appsData.result,
+    loading: state.appsData.appResultStatus
   };
 }
 

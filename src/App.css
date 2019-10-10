@@ -1,5 +1,10 @@
 body {
   padding-top: 4.5rem;
+background-image: url("images/wave.svg");
+background-attachment: fixed;
+background-position: bottom;
+background-size: 100%;
+background-repeat: no-repeat;
 }
 .App-header {
   background-color: #282c34;
