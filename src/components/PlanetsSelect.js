@@ -73,7 +73,7 @@ class PlanetsSelect extends Component {
       <div className="form-group autoComplete" ref={this.node}>
         {selectedValue ? (
           <div className="form-control tagContainer">
-            <span className="badge badge-primary">
+            <span className="badge badge-purple">
               {selectedValue}
               <span className="badge badge-light" onClick={this.removeSelect}>
                 X

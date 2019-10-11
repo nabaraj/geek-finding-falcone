@@ -7,7 +7,7 @@ class FilterBox extends Component {
     let { trackObject, parentIndex } = this.props;
     //console.log(trackObject[parentIndex]);
     return (
-      <div className="col-sm">
+      <div className="col-sm filterBox">
         <PlanetsSelect {...this.props}></PlanetsSelect>
         {trackObject[parentIndex] && trackObject[parentIndex]["planet"] && (
           <VehicleSelect {...this.props}></VehicleSelect>

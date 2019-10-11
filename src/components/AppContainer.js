@@ -20,8 +20,8 @@ class AppContainer extends Component {
       distance: { total: 0 },
       columnCount: 4,
       disabled: true,
-      progress:0,
-      loading:false
+      progress: 0,
+      loading: false
     };
     this.renderFilter = this.renderFilter.bind(this);
     this.selectPlanete = this.selectPlanete.bind(this);
@@ -205,7 +205,11 @@ class AppContainer extends Component {
     if (counter === this.state.columnCount) {
       disabled = false;
     }
-    this.setState({ disabled, distance, progress:counter/this.state.columnCount });
+    this.setState({
+      disabled,
+      distance,
+      progress: counter / this.state.columnCount
+    });
   }
 
   /**
@@ -218,7 +222,7 @@ class AppContainer extends Component {
       <div className="text-center col-sm-12">
         {result.status && result.status !== "false" ? (
           <React.Fragment>
-            <h5>
+            <h5 className="helperText">
               Success! Congratulations on Finding Falcon. King Shan is mighty
               pleased.
             </h5>
@@ -227,7 +231,7 @@ class AppContainer extends Component {
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <h5>Could not found, try again.</h5>
+            <h5 className="helperText">Could not found, try again.</h5>
           </React.Fragment>
         )}
       </div>
@@ -235,20 +239,20 @@ class AppContainer extends Component {
   }
   render() {
     let { vehicleArr, planetsArr, distance, disabled, progress } = this.state;
-    let {loading}=this.props;
+    let { loading } = this.props;
     let disabledStatus = disabled || loading;
 
-    let progressStyle = {width:`${progress*100}%`}
-     return (
+    let progressStyle = { width: `${progress * 100}%` };
+    return (
       <div className="row">
         {this.props.result ? (
           this.renderResult(this.props.result)
         ) : (
           <React.Fragment>
             <div className="col-sm-12">
-              <h3 className="text-center">
+              <h6 className="text-center helperText">
                 Select Planes You Want To Search In
-              </h3>
+              </h6>
             </div>
             {vehicleArr.length > 0 && planetsArr.length > 0 ? (
               <React.Fragment>
@@ -263,18 +267,32 @@ class AppContainer extends Component {
                 <div className="col-sm-12 text-center">
                   <button
                     type="button"
-                    className="btn btn-outline-success"
+                    className="btn btn-outline-purple"
                     disabled={disabledStatus}
                     onClick={e =>
                       this.props.submitResult(this.state.trackObject)
                     }
                   >
                     Find Falcon!
-                    {loading && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
-                    
-                    {!loading &&<div className="progress">
-                      <div className="progress-bar progress-bar-striped bg-success" role="progressbar" style={progressStyle} aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>}
+                    {loading && (
+                      <span
+                        className="spinner-border spinner-border-sm"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                    )}
+                    {!loading && (
+                      <div className="progress">
+                        <div
+                          className="progress-bar progress-bar-striped bg-purple"
+                          role="progressbar"
+                          style={progressStyle}
+                          aria-valuenow="10"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                        ></div>
+                      </div>
+                    )}
                   </button>
                 </div>
                 {/* button container */}
